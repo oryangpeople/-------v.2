@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <title>독서의 밤</title>
+    <link rel="shortcut icon" type="image/x-icon" href="https://url.kr/vne52h" />
+  </head>
+  <body>
+<!-- navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a href="/"><img src="https://url.kr/thjnx8" alt="" width= 100px> </a>
+      <a class="navbar-brand" href="/list">독서의 밤</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/list">토픽 작성</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/list">임시</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/list">임시</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+
+
+    <div class="container mt-3">
+        <div class="card" style="width: 100%">
+          <div class="card-body">
+            <h4 class="card-title"><%= data.제목 %> </h4>  
+            <p><%= data.학번이름 %></p>
+            <h5> <%= data.내용 %></h5>
+            <p class="card-text"></p>
+            
+          </div>
+        </div>
+        <button class="btn btn-outline-dark" data-toggle="modal" data-target="#editModal">
+            수정
+          </button>
+        <button class="btn btn-outline-dark" data-toggle="modal" data-target="#deleteModal">
+            삭제
+          </button>
+      </div>
+
+
+
+
+
+<!-- 수정용 모달창 -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">안내 메세지</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!-- 수정용 비번 입력폼 -->
+     <div class="form-group container">
+          <label for="recipient-name" class="col-form-label">비밀번호를 입력해주세요</label>
+          <br>
+          <input type="text" class="form-control" id="editPass" name="pass-1">
+      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+          <button class="btn btn-primary edit" data-id="<%= data._id %>" data-pw="<%= data.비번 %>">입력</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- 삭제용 모달창 -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">안내 메세지</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <!-- 삭제용 비번 입력폼 -->
+        <div class="form-group container">
+            <label for="recipient-name" class="col-form-label">비밀번호를 입력해주세요</label>
+            <br>
+            <input type="text" class="form-control" id="deletePass" name="pass-2">
+        </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+            <button class="btn btn-primary delete" data-id="<%= data._id %>" data-pw="<%= data.비번 %>">입력</button>
+          </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <br>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+
+    <script>
+
+
+
+        $('.edit').click(function(e){
+            const pass_send = $('#editPass').val();
+            const db_pass = e.target.dataset.pw;
+            if (pass_send == db_pass){
+            var num = e.target.dataset.id;
+            console.log(num)
+            location.href = '/edit/' + num
+           } else {
+            alert("비밀번호가 잘못되었습니다.")
+           }
+        })
+
+
+
+    // 삭제 기능
+        $('.delete').click(function(e){
+            const pass_send = $('#deletePass').val();
+            const db_pass = e.target.dataset.pw;
+            if (pass_send == db_pass){
+            var num = e.target.dataset.id;
+            $.ajax({
+            method : 'DELETE',
+            url : '/delete',
+            data : {_id : num}
+            }).done(function(result){
+                location.href = '/list'
+                alert('삭제되었습니다.')
+            })
+            } else {
+            alert('비밀번호가 잘못되었습니다.')
+            location.reload();
+            }
+        })
+
+    </script>
+    
+
+
+
+
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+  </body>
+</html>
